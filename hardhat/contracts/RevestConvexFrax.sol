@@ -74,21 +74,11 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
 
     uint private constant MAX_LOCKUP = 2 * 365 days;
 
-    // Fee tracker
-    uint private weiFee = 1 ether;
-
-    // For tracking if a given contract has approval for token
-    mapping (address => mapping (address => bool)) private approvedContracts;
-
-    // For tracking wallet approvals for tokens
-    // Works for up to 256 tokens
-    mapping (address => mapping (uint => uint)) private walletApprovals;
-
     mapping (uint => bytes32) public kekIds;
 
 
     // Initialize the contract with the needed valeus
-    constructor(address _provider, address _vE, address _distro, uint N_COINS) {
+    constructor(address _provider) {
         addressRegistry = _provider;
         VestedEscrowSmartWallet wallet = new VestedEscrowSmartWallet();
         TEMPLATE = address(wallet);
@@ -187,7 +177,6 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
     }
 
     // Not applicable, as these cannot be split
-    // Why not? We don't enable it in IRevest.FNFTConfig
     function handleFNFTRemaps(uint, uint[] memory, address, bool) external pure override {
         require(false, 'Not applicable');
     }
@@ -227,29 +216,10 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
         uint fnftId,
         bytes memory
     ) external override onlyTokenHolder(fnftId) {
-        address rewardsAdd = IAddressRegistry(addressRegistry).getRewardsHandler();
         address smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
         VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
         wallet.claimRewards(msg.sender);
     }       
-
-
-    // Utility functions
-
-    function _isApproved(address wallet, address feeDistro) internal view returns (bool) {
-        uint256 _id = uint256(uint160(feeDistro));
-        uint256 _mask = 1 << _id % 256;
-        return (walletApprovals[wallet][_id / 256] & _mask) != 0;
-    }
-
-    function _setIsApproved(address wallet, address feeDistro, bool _approval) internal {
-        uint256 _id = uint256(uint160(feeDistro));
-        if (_approval) {
-            walletApprovals[wallet][_id / 256] |= 1 << _id % 256;
-        } else {
-            walletApprovals[wallet][_id / 256] &= 0 << _id % 256;
-        }
-    }
 
 
     /// Admin Functions
@@ -280,14 +250,13 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
         return METADATA;
     }
     
-    // Will give balance in xLQDR
-    // TODO: Implement
+    // Will give balance in LPs
     function getValue(uint fnftId) public view override returns (uint) {
         return IConvexWrapperV2(STAKING_TOKEN).totalBalanceOf(Clones.predictDeterministicAddress(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId))));
     }
 
     // Must always be in native token
-    function getAsset(uint) external view override returns (address) {
+    function getAsset(uint) external pure override returns (address) {
         return CURVE_LP;
     }
 

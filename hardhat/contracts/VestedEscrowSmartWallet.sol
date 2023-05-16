@@ -21,20 +21,16 @@ contract VestedEscrowSmartWallet {
 
     address private immutable MASTER;
 
+    // Hardcoded for MVP
     address public constant CURVE_LP = 0xf43211935C781D5ca1a41d2041F397B8A7366C7A;
-
     address public constant STAKING_TOKEN = 0x4659d5fF63A1E1EDD6D5DD9CC315e063c95947d0; // ConvexWrapperV2
-
     address public constant STAKING_ADDRESS = 0xa537d64881b84faffb9Ae43c951EEbF368b71cdA;
-
     address public constant CONVEX_DEPOSIT_TOKEN = 0xC07e540DbFecCF7431EA2478Eb28A03918c1C30E;
-
     address public constant REWARDS = 0x3465B8211278505ae9C6b5ba08ECD9af951A6896;
 
     address public constant FXS = 0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0;
-
-    address public constant CRV = address(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    address public constant CVX = address(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    address public constant CRV = 0xD533a949740bb3306d119CC777fa900bA034cd52;
+    address public constant CVX = 0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B;
 
 
 
