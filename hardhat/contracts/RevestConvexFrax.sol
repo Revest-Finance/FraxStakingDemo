@@ -13,7 +13,6 @@ import "./interfaces/IVotingEscrow.sol";
 import "./interfaces/IFeeReporter.sol";
 import "./interfaces/IDistributor.sol";
 import "./VestedEscrowSmartWallet.sol";
-import "./SmartWalletWhitelistV2.sol";
 
 // OZ imports
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -43,6 +42,17 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     
     using SafeERC20 for IERC20;
 
+    /// @notice The address of the convex booster to clone vaults from
+    address internal constant CONVEX_BOOSTER = address(0x569f5B842B5006eC17Be02B8b94510BA8e79FbCa);
+    /// @notice The address of the convex fee registry
+    address internal constant CONVEX_FEE_REGISTRY = address(0xC9aCB83ADa68413a6Aa57007BC720EE2E2b3C46D);
+    /// @notice The convex pool id for this asset/strategy
+    uint256 internal constant CONVEX_PID = 36;
+    /// @notice Address of FXS token
+    address internal constant FXS = address(0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0);
+    /// @notice Fee denominator for fee calculations
+    uint256 internal constant FEE_DENOMINATOR = 10000;
+
     // Where to find the Revest address registry that contains info about what contracts live where
     address public addressRegistry;
 
@@ -50,12 +60,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     address public immutable VOTING_ESCROW;
 
     // Token used for voting escrow
-    address public immutable TOKEN;
-
-    // Distributor for rewards address
-    address public DISTRIBUTOR;
-
-    address[] public REWARD_TOKENS;
+    address public immutable TOKEN;  
 
     // Template address for VE wallets
     address public immutable TEMPLATE;
@@ -80,15 +85,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     // Works for up to 256 tokens
     mapping (address => mapping (uint => uint)) private walletApprovals;
 
-    // WFTM contract
-    address private constant WFTM = 0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83;
-
-
-    // Control variable to let all users utilize smart wallets for proxy execution
-    bool public globalProxyEnabled;
-
-    // Control variable to enable a given FNFT to utilize their smart wallet for proxy execution
-    mapping (uint => bool) public proxyEnabled;
+    mapping (uint => bytes32) public kekIds;
 
 
     // Initialize the contract with the needed valeus
@@ -128,24 +125,10 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     }
 
 
-    function lockLiquidDriverTokens(
+    function lockTokens(
         uint endTime,
         uint amountToLock
     ) external payable returns (uint fnftId) {    
-        require(msg.value >= weiFee, 'Insufficient fee!');
-
-        // Pay fee: this is dependent on this contract being whitelisted to allow it to pay
-        // nothing via the typical method
-        {
-            uint wftmFee = msg.value;
-            address rewards = IAddressRegistry(addressRegistry).getRewardsHandler();
-            IWETH(WFTM).deposit{value: msg.value}();
-            if(!approvedContracts[rewards][WFTM]) {
-                IERC20(WFTM).approve(rewards, MAX_INT);
-                approvedContracts[rewards][WFTM] = true;
-            }
-            IRewardsHandler(rewards).receiveFee(WFTM, wftmFee);
-        }
 
         /// Mint FNFT
         {
@@ -181,14 +164,11 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
             smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
             VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
 
-            // Transfer the tokens from the user to the smart wallet
-            IERC20(TOKEN).safeTransferFrom(msg.sender, smartWallAdd, amountToLock);
+            //NB: Have the user approve the counterfactual smart wallet itself to save on gas
 
-            // We use our admin powers on SmartWalletWhitelistV2 to approve the newly created smart wallet
-            SmartWalletWhitelistV2(IVotingEscrow(VOTING_ESCROW).smart_wallet_checker()).approveWallet(smartWallAdd);
-
-            // We deposit our funds into the wallet
-            wallet.createLock(amountToLock, endTime, VOTING_ESCROW);
+            // We deposit our funds into the wallet, store kek_id
+            kekIds[smartWallAdd] = wallet.createLock(amountToLock, endTime, msg.sender);
+            wallet.cleanMemory();
             emit DepositERC20OutputReceiver(msg.sender, TOKEN, amountToLock, fnftId, abi.encode(smartWallAdd));
         }
     }

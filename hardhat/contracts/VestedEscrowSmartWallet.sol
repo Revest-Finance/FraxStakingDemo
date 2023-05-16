@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GNU-GPL v3.0 or later
 
-import "./interfaces/IVotingEscrow.sol";
+import "./interfaces/IFraxFarmERC20.sol";
+import "./interfaces/IFraxFarmBase.sol";
+import "./interfaces/IConvexWrapperV2.sol";
+import "./interfaces/IRewards.sol";
+
 import "./interfaces/IDistributor.sol";
 import "./interfaces/IRewardsHandler.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -17,9 +21,17 @@ contract VestedEscrowSmartWallet {
 
     address private immutable MASTER;
 
-    uint private constant feeNumerator = 1;
+    address public constant CURVE_LP = 0xf43211935c781d5ca1a41d2041f397b8a7366c7a;
 
-    uint private constant feeDenominator = 100;
+    address public constant STAKING_TOKEN = 0x4659d5ff63a1e1edd6d5dd9cc315e063c95947d0; // ConvexWrapperV2
+
+    address public constant STAKING_ADDRESS = 0xa537d64881b84faffb9Ae43c951EEbF368b71cdA;
+
+    address public constant CONVEX_DEPOSIT_TOKEN = 0xC07e540DbFecCF7431EA2478Eb28A03918c1C30E;
+
+    address public constant REWARDS = 0x3465b8211278505ae9c6b5ba08ecd9af951a6896;
+
+
 
     constructor() {
         MASTER = msg.sender;
@@ -30,33 +42,59 @@ contract VestedEscrowSmartWallet {
         _;
     }
 
-    function createLock(uint value, uint unlockTime, address votingEscrow) external onlyMaster {
-        // Only callable from the parent contract, transfer tokens from user -> parent, parent -> VE
-        address token = IVotingEscrow(votingEscrow).token();
-        // Single-use approval system
-        if(IERC20(token).allowance(address(this), votingEscrow) != MAX_INT) {
-            IERC20(token).approve(votingEscrow, MAX_INT);
+    function createLock(uint value, uint unlockTime) external onlyMaster returns (bytes32 kek_id) {
+        // Set all approvals up, don't if they're already set
+        if(IERC20(STAKING_TOKEN).allowance(address(this), STAKING_ADDRESS) != MAX_INT) {
+            IERC20(STAKING_TOKEN).approve(STAKING_ADDRESS, MAX_INT);
         }
+        if(IERC20(CURVE_LP).allowance(address(this), STAKING_TOKEN) != MAX_INT) {
+            IERC20(CURVE_LP).approve(STAKING_TOKEN, MAX_INT);
+        }
+        if(IERC20(CONVEX_DEPOSIT_TOKEN).allowance(address(this), STAKING_TOKEN) != MAX_INT) {
+            IERC20(CONVEX_DEPOSIT_TOKEN).approve(STAKING_TOKEN, MAX_INT);
+        }
+
         // Create the lock
-        IVotingEscrow(votingEscrow).create_lock(value, unlockTime);
-        _cleanMemory();
+        IConvexWrapperV2(stakingToken).deposit(_addl_liq, address(this));
+
+        // Create stake and return kek_id
+        kek_id = IFraxFarmERC20(stakingAddress).lockAdditional(_kek_id, _addl_liq);
+        _checkpointRewards();
     }
 
-    function increaseAmount(uint value, address votingEscrow) external onlyMaster {
-        IVotingEscrow(votingEscrow).increase_amount(value);
+    function increaseAmount(uint amount, bytes32 kek_id) external onlyMaster {
+        if(amount > 0){
+            //deposit into wrapper
+            IConvexWrapperV2(stakingToken).deposit(amount, address(this));
+
+            //add stake
+            IFraxFarmERC20(stakingAddress).lockAdditional(kek_id, amount);
+        }
+        
+        //checkpoint rewards
+        _checkpointRewards();
         _cleanMemory();
     }
 
     function increaseUnlockTime(uint unlockTime, address votingEscrow) external onlyMaster {
-        IVotingEscrow(votingEscrow).increase_unlock_time(unlockTime);
+        //update time
+        IFraxFarmERC20(stakingAddress).lockLonger(_kek_id, new_ending_ts);
+        //checkpoint rewards
+        _checkpointRewards();
         _cleanMemory();
     }
 
     function withdraw(address votingEscrow) external onlyMaster {
-        address token = IVotingEscrow(votingEscrow).token();
-        IVotingEscrow(votingEscrow).withdraw();
-        uint bal = IERC20(token).balanceOf(address(this));
-        IERC20(token).safeTransfer(MASTER, bal);
+        // Withdraw
+        IFraxFarmERC20(stakingAddress).withdrawLocked(_kek_id, address(this));
+
+        // Unwrap
+        IConvexWrapperV2(stakingToken).withdrawAndUnwrap(IERC20(stakingToken).balanceOf(address(this)));
+
+        // Handle transfer
+        uint bal = IERC20(CURVE_LP).balanceOf(address(this));
+        IERC20(CURVE_LP).safeTransfer(MASTER, bal);
+        _checkpointRewards();
         _cleanMemory();
     }
 
@@ -115,6 +153,24 @@ contract VestedEscrowSmartWallet {
 
     function _cleanMemory() internal {
         selfdestruct(payable(MASTER));
+    }
+
+    //checkpoint and add/remove weight to convex rewards contract
+    function _checkpointRewards() internal{
+        //if rewards are active, checkpoint
+        if(IRewards(REWARDS).active()){
+            //using liquidity shares from staking contract will handle rebasing tokens correctly
+            uint256 userLiq = IFraxFarmBase(STAKING_ADDRESS).lockedLiquidityOf(address(this));
+            //get current balance of reward contract
+            uint256 bal = IRewards(REWARDS).balanceOf(address(this));
+            if(userLiq >= bal){
+                //add the difference to reward contract
+                IRewards(REWARDS).deposit(owner, userLiq - bal);
+            }else{
+                //remove the difference from the reward contract
+                IRewards(REWARDS).withdraw(owner, bal - userLiq);
+            }
+        }
     }
 
 }
