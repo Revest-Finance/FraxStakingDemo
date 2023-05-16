@@ -8,10 +8,12 @@ import "./interfaces/ITokenVault.sol";
 import "./interfaces/IRevest.sol";
 import "./interfaces/IFNFTHandler.sol";
 import "./interfaces/ILockManager.sol";
-import "./interfaces/IRewardsHandler.sol";
-import "./interfaces/IVotingEscrow.sol";
-import "./interfaces/IFeeReporter.sol";
-import "./interfaces/IDistributor.sol";
+
+import "./interfaces/IFraxFarmERC20.sol";
+import "./interfaces/IFraxFarmBase.sol";
+import "./interfaces/IConvexWrapperV2.sol";
+import "./interfaces/IRewards.sol";
+
 import "./VestedEscrowSmartWallet.sol";
 
 // OZ imports
@@ -42,16 +44,16 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     
     using SafeERC20 for IERC20;
 
-    /// @notice The address of the convex booster to clone vaults from
-    address internal constant CONVEX_BOOSTER = address(0x569f5B842B5006eC17Be02B8b94510BA8e79FbCa);
-    /// @notice The address of the convex fee registry
-    address internal constant CONVEX_FEE_REGISTRY = address(0xC9aCB83ADa68413a6Aa57007BC720EE2E2b3C46D);
-    /// @notice The convex pool id for this asset/strategy
-    uint256 internal constant CONVEX_PID = 36;
-    /// @notice Address of FXS token
-    address internal constant FXS = address(0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0);
-    /// @notice Fee denominator for fee calculations
-    uint256 internal constant FEE_DENOMINATOR = 10000;
+    address public constant CURVE_LP = 0xf43211935c781d5ca1a41d2041f397b8a7366c7a;
+
+    address public constant STAKING_TOKEN = 0x4659d5ff63a1e1edd6d5dd9cc315e063c95947d0; // ConvexWrapperV2
+
+    address public constant STAKING_ADDRESS = 0xa537d64881b84faffb9Ae43c951EEbF368b71cdA;
+
+    address public constant CONVEX_DEPOSIT_TOKEN = 0xC07e540DbFecCF7431EA2478Eb28A03918c1C30E;
+
+    address public constant REWARDS = 0x3465b8211278505ae9c6b5ba08ecd9af951a6896;
+
 
     // Where to find the Revest address registry that contains info about what contracts live where
     address public addressRegistry;
@@ -91,17 +93,9 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     // Initialize the contract with the needed valeus
     constructor(address _provider, address _vE, address _distro, uint N_COINS) {
         addressRegistry = _provider;
-        VOTING_ESCROW = _vE;
         TOKEN = IVotingEscrow(_vE).token();
         VestedEscrowSmartWallet wallet = new VestedEscrowSmartWallet();
         TEMPLATE = address(wallet);
-        DISTRIBUTOR = _distro;
-        
-        // Running loop here means we only have to do it once
-        REWARD_TOKENS = new address[](N_COINS);
-        for(uint i = 0; i < N_COINS; i++) {
-            REWARD_TOKENS[i] = IDistributor(_distro).tokens(i);
-        }
     }
 
     modifier onlyRevestController() {
@@ -123,7 +117,6 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
             || interfaceId == type(IOutputReceiverV3).interfaceId
             || super.supportsInterface(interfaceId);
     }
-
 
     function lockTokens(
         uint endTime,
@@ -164,7 +157,8 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
             smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
             VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
 
-            //NB: Have the user approve the counterfactual smart wallet itself to save on gas
+            // Transfer the tokens from the user to this wallet
+            IERC20(CURVE_LP).safeTransferFrom(msg.sender, smartWallAdd, amountToLock);
 
             // We deposit our funds into the wallet, store kek_id
             kekIds[smartWallAdd] = wallet.createLock(amountToLock, endTime, msg.sender);
@@ -203,7 +197,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     function handleFNFTRemaps(uint, uint[] memory, address, bool) external pure override {
         require(false, 'Not applicable');
     }
-
+    
     // Allows custom parameters to be passed during withdrawals
     // This and the proceeding method are both parts of the V2 output receiver interface
     // and not typically necessary. For the sake of demonstration, they are included
@@ -234,7 +228,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     // Not applicable
     function handleSplitOperation(uint fnftId, uint[] memory proportions, uint quantity, address caller) external override {}
 
-    // Claims rewards on user's behalf
+    // Claims REWARDS on user's behalf
     function triggerOutputReceiverUpdate(
         uint fnftId,
         bytes memory
@@ -243,7 +237,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
         address smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
         VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
         { 
-            // Want this to be re-run if we change fee distributors or rewards handlers
+            // Want this to be re-run if we change fee distributors or REWARDS handlers
             address virtualAdd = address(uint160(uint256(keccak256(abi.encodePacked(DISTRIBUTOR, rewardsAdd)))));
             if(!_isApproved(smartWallAdd, virtualAdd)) {
                 wallet.proxyApproveAll(REWARD_TOKENS, rewardsAdd);
@@ -330,25 +324,26 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
     function getCustomMetadata(uint) external view override returns (string memory) {
         return METADATA;
     }
-
+    
     // Will give balance in xLQDR
+    // TODO: Implement
     function getValue(uint fnftId) public view override returns (uint) {
         return IVotingEscrow(VOTING_ESCROW).balanceOf(Clones.predictDeterministicAddress(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId))));
     }
 
     // Must always be in native token
     function getAsset(uint) external view override returns (address) {
-        return VOTING_ESCROW;
+        return CURVE_LP;
     }
 
     function getOutputDisplayValues(uint fnftId) external view override returns (bytes memory displayData) {
-        (uint[] memory rewards, bool hasRewards) = getRewardsForFNFT(fnftId);
+        (address[] memory tokens, uint256[] memory rewardAmounts) = earned(fnftId);
         string[] memory rewardsDesc = new string[](REWARD_TOKENS.length);
         if(hasRewards) {
-            for(uint i = 0; i < REWARD_TOKENS.length; i++) {
-                address token = REWARD_TOKENS[i];
+            for(uint i = 0; i < tokens.length; i++) {
+                address token = tokens[i];
                 string memory par1 = string(abi.encodePacked(RevestHelper.getName(token),": "));
-                string memory par2 = string(abi.encodePacked(RevestHelper.amountToDecimal(rewards[i], token), " [", RevestHelper.getTicker(token), "] Tokens Available"));
+                string memory par2 = string(abi.encodePacked(RevestHelper.amountToDecimal(rewardAmounts[i], token), " [", RevestHelper.getTicker(token), "] Tokens Available"));
                 rewardsDesc[i] = string(abi.encodePacked(par1, par2));
             }
         }
@@ -377,88 +372,38 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165, IFeeReporter 
         smartWallAdd = Clones.predictDeterministicAddress(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
     }
 
-    // Find rewards for a given smart wallet using the Curve formulae
-    function getRewardsForFNFT(uint fnftId) private view returns (uint[] memory rewards, bool rewardsPresent) {
-        uint userEpoch;
-        IDistributor distro = IDistributor(DISTRIBUTOR);
-        IVotingEscrow voting = IVotingEscrow(VOTING_ESCROW);
+    
+    //helper function to combine earned tokens on staking contract and any tokens that are on this vault
+    function earned(uint fnftId) external view override returns (address[] memory token_addresses, uint256[] memory total_earned) {
+        //get list of reward tokens
         address smartWallAdd = getAddressForFNFT(fnftId);
-        
-        uint lastTokenTime = distro.last_token_times(0);
-        lastTokenTime = lastTokenTime / DAY * DAY;
 
-        rewards = new uint[](REWARD_TOKENS.length);
-        uint maxUserEpoch = voting.user_point_epoch(smartWallAdd);
-        uint startTime = distro.start_time();
-        
-        if(maxUserEpoch == 0) {
-            return (rewards, rewardsPresent);
+        address[] memory rewardTokens = IFraxFarmERC20(STAKING_ADDRESS).getAllRewardTokens();
+        uint256[] memory stakedearned = IFraxFarmERC20(STAKING_ADDRESS).earned(smartWallet);
+        IConvexWrapperV2.EarnedData[] memory convexrewards = IConvexWrapperV2(STAKING_TOKEN).earnedView(smartWallet);
+
+        uint256 extraRewardsLength = IRewards(REWARDS).rewardTokenLength();
+        token_addresses = new address[](rewardTokens.length + extraRewardsLength + convexrewards.length);
+        total_earned = new uint256[](rewardTokens.length + extraRewardsLength + convexrewards.length);
+
+        //add any tokens that happen to be already claimed but sitting on the vault
+        //(ex. withdraw claiming REWARDS)
+        for(uint256 i = 0; i < rewardTokens.length; i++){
+            token_addresses[i] = rewardTokens[i];
+            total_earned[i] = stakedearned[i] + IERC20(rewardTokens[i]).balanceOf(smartWallet);
         }
 
-        uint dayCursor = distro.time_cursor_of(smartWallAdd);
-        if(dayCursor == 0) {
-            userEpoch = findTimestampUserEpoch(smartWallAdd, startTime, maxUserEpoch);
-        } else {
-            userEpoch = distro.user_epoch_of(smartWallAdd);
+        IRewards.EarnedData[] memory extraRewards = IRewards(REWARDS).claimableRewards(smartWallet);
+        for(uint256 i = 0; i < extraRewards.length; i++){
+            token_addresses[i+rewardTokens.length] = extraRewards[i].token;
+            total_earned[i+rewardTokens.length] = extraRewards[i].amount;
         }
 
-        if(userEpoch == 0) {
-            userEpoch = 1;
+        //add convex farm earned tokens
+        for(uint256 i = 0; i < convexrewards.length; i++){
+            token_addresses[i+rewardTokens.length+extraRewardsLength] = convexrewards[i].token;
+            total_earned[i+rewardTokens.length+extraRewardsLength] = convexrewards[i].amount;
         }
-
-        IVotingEscrow.Point memory userPoint = voting.user_point_history(smartWallAdd, userEpoch);
-
-        if(dayCursor == 0) {
-            dayCursor = (userPoint.ts + DAY - 1) / DAY * DAY;
-        }
-
-        if(dayCursor >= lastTokenTime) {
-            return (rewards, rewardsPresent);
-        }
-
-        if(dayCursor < startTime) {
-            dayCursor = startTime;
-        }
-
-        IVotingEscrow.Point memory oldUserPoint;
-
-        for(uint i = 0; i < 150; i++) {
-            if(dayCursor >= lastTokenTime) {
-                break;
-            }
-
-            if(dayCursor >= userPoint.ts && userEpoch <= maxUserEpoch) {
-                userEpoch++;
-                oldUserPoint = userPoint;
-                if(userEpoch > maxUserEpoch) {
-                    IVotingEscrow.Point memory tmpPoint;
-                    userPoint = tmpPoint;
-                } else {
-                    userPoint = voting.user_point_history(smartWallAdd, userEpoch);
-                }
-            } else {
-                uint balanceOf;
-                {
-                    int128 dt = int128(uint128(dayCursor - oldUserPoint.ts));
-                    int128 res = oldUserPoint.bias - dt * oldUserPoint.slope;
-                    balanceOf = res > 0 ? uint(int256(res)) : 0;
-                }
-                if(balanceOf == 0 && userEpoch > maxUserEpoch) {
-                    break;
-                } 
-                if(balanceOf > 0) {
-                    for(uint j = 0; j < REWARD_TOKENS.length; j++) {
-                        rewards[j] += balanceOf * distro.tokens_per_day(dayCursor, j) / distro.ve_supply(dayCursor);
-                        if(rewards[j] > 0 && !rewardsPresent) {
-                            rewardsPresent = true;
-                        } 
-                    }
-                }
-                dayCursor += DAY;
-            }
-        }
-
-        return (rewards, rewardsPresent);
     }
 
     // Implementation of Binary Search
