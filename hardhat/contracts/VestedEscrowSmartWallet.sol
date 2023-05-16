@@ -85,7 +85,7 @@ contract VestedEscrowSmartWallet {
         _cleanMemory();
     }
 
-    function withdraw(bytes32 kek_id, address user) external onlyMaster {
+    function withdraw(bytes32 kek_id, address user) external onlyMaster returns (uint balance) {
         // Withdraw
         IFraxFarmERC20(STAKING_ADDRESS).withdrawLocked(kek_id, address(this));
 
@@ -93,10 +93,9 @@ contract VestedEscrowSmartWallet {
         IConvexWrapperV2(STAKING_TOKEN).withdrawAndUnwrap(IERC20(STAKING_TOKEN).balanceOf(address(this)));
 
         // Handle transfer
-        uint bal = IERC20(CURVE_LP).balanceOf(address(this));
-        IERC20(CURVE_LP).safeTransfer(MASTER, bal);
+        balance = IERC20(CURVE_LP).balanceOf(address(this));
+        IERC20(CURVE_LP).safeTransfer(user, balance);
         _checkpointRewards(user);
-        _cleanMemory();
     }
 
     function claimRewards(address user) external onlyMaster {

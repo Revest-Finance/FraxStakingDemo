@@ -65,7 +65,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
     address public immutable TEMPLATE;
 
     // The file which tells our frontend how to visually represent such an FNFT
-    string public METADATA = "https://revest.mypinata.cloud/ipfs/Qmcy4NZmfefKAJ81w9ahwBWp3tX6f8B6i7r9xEzV4RbrdE";
+    string public METADATA = "https://revest.mypinata.cloud/ipfs/QmRLesf7CzwLapJS3aWWM9wS9HqgvX8Z36zQhWSd1uMFmp";
 
     // Constant used for approval
     uint private constant MAX_INT = 2 ** 256 - 1;
@@ -168,11 +168,8 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
         address smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
         VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
 
-        wallet.withdraw(kekIds[fnftId], caller);
-        uint balance = IERC20(TOKEN).balanceOf(address(this));
-        IERC20(TOKEN).safeTransfer(caller, balance);
-
-
+        uint balance = wallet.withdraw(kekIds[fnftId], caller);
+        wallet.cleanMemory();
         emit WithdrawERC20OutputReceiver(caller, TOKEN, balance, fnftId, abi.encode(smartWallAdd));
     }
 
