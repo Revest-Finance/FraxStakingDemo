@@ -1,9 +1,11 @@
 {
   "devDependencies": {
+    "@nomicfoundation/hardhat-foundry": "^1.0.1",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.4",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^4.2.0",
+    "@openzeppelin/test-helpers": "^0.5.16",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
@@ -110,6 +112,7 @@
     "glob-parent": "^5.1.2",
     "graceful-fs": "^4.2.8",
     "growl": "^1.10.5",
+    "hardhat-tracer": "^2.3.0",
     "has": "^1.0.3",
     "has-bigints": "^1.0.1",
     "has-flag": "^3.0.0",

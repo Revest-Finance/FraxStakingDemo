@@ -40,7 +40,7 @@ interface IWETH {
  * @author RobAnon
  * @dev 
  */
-contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
+contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165 {
     
     using SafeERC20 for IERC20;
 
@@ -107,7 +107,7 @@ contract RevestLiquidDriver is IOutputReceiverV3, Ownable, ERC165 {
     function lockTokens(
         uint endTime,
         uint amountToLock
-    ) external payable returns (uint fnftId) {    
+    ) external returns (uint fnftId) {    
 
         /// Mint FNFT
         {

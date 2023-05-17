@@ -5,8 +5,6 @@ import "./interfaces/IFraxFarmBase.sol";
 import "./interfaces/IConvexWrapperV2.sol";
 import "./interfaces/IRewards.sol";
 
-import "./interfaces/IDistributor.sol";
-import "./interfaces/IRewardsHandler.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 
