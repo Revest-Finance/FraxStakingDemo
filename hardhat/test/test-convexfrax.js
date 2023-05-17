@@ -18,12 +18,12 @@ const separator = "\t-----------------------------------------";
 
 // 31337 is the default hardhat forking network
 const PROVIDERS = {
-    1:'0xD721A90dd7e010c8C5E022cc0100c55aC78E0FC4',
-    31337: "0xe0741aE6a8A6D87A68B7b36973d8740704Fd62B9",
+    1:'0xd2c6eB7527Ab1E188638B86F2c14bbAd5A431d78',
+    31337: "0xd2c6eB7527Ab1E188638B86F2c14bbAd5A431d78",
     4:"0x21744C9A65608645E1b39a4596C39848078C2865",
     137:"0xC03bB46b3BFD42e6a2bf20aD6Fa660e4Bd3736F8",
     250:"0xe0741aE6a8A6D87A68B7b36973d8740704Fd62B9",
-    43114:"0x64e12fEA089e52A06A7A76028C809159ba4c1b1a"
+    43114:"0xd2c6eB7527Ab1E188638B86F2c14bbAd5A431d78"
 };
 
 const WETH ={
@@ -138,8 +138,9 @@ describe("Revest", function () {
 
             //TODO: check if we need to add changeAdmin to vestedEsc
             //await SmartWalletChecker.changeAdmin(RevestCF.address, true);
-
-            RevestContract = new ethers.Contract(REVEST, revestABI, whaleSigners[1]);
+            console.log("Deployments done!");
+            
+            RevestContract = new ethers.Contract(REVEST, revestABI, owner);
 
             // The LQDR contract object
             rvstTokenContract = new ethers.Contract(frxETHCURVE_TOKEN, abi, owner);
@@ -153,14 +154,19 @@ describe("Revest", function () {
 
 
             for (const whale of whales) {
+                console.log(whale);
+
                 let signer = await ethers.provider.getSigner(whale);
                 whaleSigners.push(signer);
                 setupImpersonator(whale);
-                await approveAll(signer, xLQDR.address);
-                await approveAll(signer, feeDistro. address);
+                await approveAll(signer, RevestCF.address);
             }
 
             await approveAll(owner, RevestCF.address);
+
+            console.log("Approvals done!")
+
+            
 
 
 
@@ -184,16 +190,15 @@ describe("Revest", function () {
         let time = block.timestamp;
 
         // Outline the parameters that will govern the FNFT
-        let expiration = time + (2 * 365 * 60 * 60 * 24); // Two years in future
-        let fee = ethers.utils.parseEther('3');//FTM fee
+        let expiration = time + (1 * 365 * 60 * 60 * 24); // One year in future
         let amount = ethers.utils.parseEther('10'); //frxETHCurve
 
         // Mint the FNFT
         await rvstTokenContract.connect(whaleSigners[1]).approve(RevestCF.address, ethers.constants.MaxInt256);
         console.log("\there");
-        fnftId = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount, {value:fee});
+        fnftId = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount);
         console.log("\there");
-        let txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount, {value:fee});
+        let txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount);
         await txn.wait();
 
         let expectedValue = await RevestCF.getValue(fnftId);
@@ -203,8 +208,8 @@ describe("Revest", function () {
         console.log("\tSmart wallet address at: " + smartWalletAddress);
 
         // Mint a second FNFT to split the fees 50/50
-        fnftId2 = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount, {value:fee});
-        txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount, {value:fee});
+        fnftId2 = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount);
+        txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount);
         await txn.wait();
     });
 
@@ -329,9 +334,8 @@ async function timeTravel(time) {
 }
 
 async function approveAll(signer, address) {
-    let approval = await rvstTokenContract
-        .connect(signer)
-        .approve(address, ethers.constants.MaxInt256);
+    console.log(signer, address);
+    let approval = await rvstTokenContract.connect(signer).approve(address, ethers.constants.MaxInt256);
     let out = await approval.wait();
     
 }

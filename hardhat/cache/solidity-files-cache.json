@@ -1,12 +1,50 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/RevestConvexFrax.sol": {
-      "lastModificationDate": 1684311953843,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/Revest.sol": {
+      "lastModificationDate": 1684329764644,
+      "contentHash": "1b88afc50437a254ecd7651a03f7a5ae",
+      "sourceName": "contracts/Revest.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": []
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/RevestConvexFrax.sol": {
+      "lastModificationDate": 1684329931782,
       "contentHash": "3fb4bee71561cc5471932c46215d96ef",
       "sourceName": "contracts/RevestConvexFrax.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -64,12 +102,54 @@
         "RevestConvexFrax"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/ITokenVault.sol": {
-      "lastModificationDate": 1684289371715,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IAddressRegistry.sol": {
+      "lastModificationDate": 1684258110567,
+      "contentHash": "544b1a32b24675bd28121fcd591dca24",
+      "sourceName": "contracts/interfaces/IAddressRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IAddressRegistry"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/ITokenVault.sol": {
+      "lastModificationDate": 1684258110576,
       "contentHash": "e8764a20d6d87f8f7797ec4cb2145de5",
       "sourceName": "contracts/interfaces/ITokenVault.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -108,96 +188,12 @@
         "ITokenVault"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IAddressRegistry.sol": {
-      "lastModificationDate": 1684289371346,
-      "contentHash": "544b1a32b24675bd28121fcd591dca24",
-      "sourceName": "contracts/interfaces/IAddressRegistry.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IAddressRegistry"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IFNFTHandler.sol": {
-      "lastModificationDate": 1684289371423,
-      "contentHash": "7e26c0f6eaa94a846b79391da5a1345c",
-      "sourceName": "contracts/interfaces/IFNFTHandler.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IFNFTHandler"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IRevest.sol": {
-      "lastModificationDate": 1684289371687,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IRevest.sol": {
+      "lastModificationDate": 1684258110571,
       "contentHash": "1845969737e8c6cf8e771aca6d5fe39d",
       "sourceName": "contracts/interfaces/IRevest.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -234,12 +230,96 @@
         "IRevest"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IFraxFarmERC20.sol": {
-      "lastModificationDate": 1684289371611,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IFNFTHandler.sol": {
+      "lastModificationDate": 1684258110568,
+      "contentHash": "7e26c0f6eaa94a846b79391da5a1345c",
+      "sourceName": "contracts/interfaces/IFNFTHandler.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IFNFTHandler"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IFraxFarmBase.sol": {
+      "lastModificationDate": 1684259545717,
+      "contentHash": "abc45d54fa99f359fbcd959eca889278",
+      "sourceName": "contracts/interfaces/IFraxFarmBase.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IFraxFarmBase"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IFraxFarmERC20.sol": {
+      "lastModificationDate": 1684259471421,
       "contentHash": "1af64dafd1583d48da5880af1a2da5ca",
       "sourceName": "contracts/interfaces/IFraxFarmERC20.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -274,12 +354,56 @@
         "IFraxFarmERC20"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/ILockManager.sol": {
-      "lastModificationDate": 1684289371618,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IOutputReceiverV3.sol": {
+      "lastModificationDate": 1684258110574,
+      "contentHash": "29bd823ca736dd3df705abb6e3ab2398",
+      "sourceName": "contracts/interfaces/IOutputReceiverV3.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "./IOutputReceiverV2.sol"
+      ],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IOutputReceiverV3"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/ILockManager.sol": {
+      "lastModificationDate": 1684258110559,
       "contentHash": "851ae81c1b1e22fde4cc87b40c2890cc",
       "sourceName": "contracts/interfaces/ILockManager.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -318,12 +442,12 @@
         "ILockManager"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IConvexWrapperV2.sol": {
-      "lastModificationDate": 1684289371406,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IConvexWrapperV2.sol": {
+      "lastModificationDate": 1684259418653,
       "contentHash": "98dfdfd36a3a0488326ad7e9925fd8f6",
       "sourceName": "contracts/interfaces/IConvexWrapperV2.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -358,54 +482,12 @@
         "IConvexWrapperV2"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IFraxFarmBase.sol": {
-      "lastModificationDate": 1684289371554,
-      "contentHash": "abc45d54fa99f359fbcd959eca889278",
-      "sourceName": "contracts/interfaces/IFraxFarmBase.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IFraxFarmBase"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IRewards.sol": {
-      "lastModificationDate": 1684289371698,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IRewards.sol": {
+      "lastModificationDate": 1684272071991,
       "contentHash": "70b035c51ffc28c4116ff5167c814e6e",
       "sourceName": "contracts/interfaces/IRewards.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -442,12 +524,12 @@
         "IRewards"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/VestedEscrowSmartWallet.sol": {
-      "lastModificationDate": 1684289371327,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/VestedEscrowSmartWallet.sol": {
+      "lastModificationDate": 1684300615892,
       "contentHash": "603d213ecc7eaee1c2b9f89eb5abbfe8",
       "sourceName": "contracts/VestedEscrowSmartWallet.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -492,12 +574,12 @@
         "VestedEscrowSmartWallet"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/lib/RevestHelper.sol": {
-      "lastModificationDate": 1684289371761,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/lib/RevestHelper.sol": {
+      "lastModificationDate": 1684258110556,
       "contentHash": "3554904658100ebfeac9339dd32702b6",
       "sourceName": "contracts/lib/RevestHelper.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -539,12 +621,12 @@
         "RevestHelper"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IOutputReceiverV3.sol": {
-      "lastModificationDate": 1684289371643,
-      "contentHash": "29bd823ca736dd3df705abb6e3ab2398",
-      "sourceName": "contracts/interfaces/IOutputReceiverV3.sol",
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/proxy/Clones.sol": {
+      "lastModificationDate": 1684329853919,
+      "contentHash": "e8f1f04c46c67381a0b13f90439f9b41",
+      "sourceName": "@openzeppelin/contracts/proxy/Clones.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -573,66 +655,20 @@
           }
         }
       },
-      "imports": [
-        "./IOutputReceiverV2.sol"
-      ],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IOutputReceiverV3"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
-      "lastModificationDate": 1684290252880,
-      "contentHash": "a9a5319dff9088c6ffe757ea1c2a6729",
-      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [
-        "./IERC165.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "ERC165"
+        "Clones"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
-      "lastModificationDate": 1684290252607,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1684329854013,
       "contentHash": "4fe56b59ced59d87df6b796758f62895",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -671,12 +707,12 @@
         "Ownable"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/proxy/Clones.sol": {
-      "lastModificationDate": 1684290790429,
-      "contentHash": "e8f1f04c46c67381a0b13f90439f9b41",
-      "sourceName": "@openzeppelin/contracts/proxy/Clones.sol",
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+      "lastModificationDate": 1684329853944,
+      "contentHash": "a9a5319dff9088c6ffe757ea1c2a6729",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -705,20 +741,22 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "./IERC165.sol"
+      ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "Clones"
+        "ERC165"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-      "lastModificationDate": 1684290252725,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1684329854000,
       "contentHash": "0eac3e1a83ee62326ca007811285b274",
       "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -755,12 +793,12 @@
         "IERC20"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
-      "lastModificationDate": 1684290252862,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+      "lastModificationDate": 1684329854001,
       "contentHash": "aa1be06992a99bb7393b26a6af3c4dfb",
       "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -799,12 +837,12 @@
         "IERC20Metadata"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
-      "lastModificationDate": 1684290252864,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+      "lastModificationDate": 1684329854019,
       "contentHash": "d37406082a74a9b6b114de522fcb6349",
       "sourceName": "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -844,225 +882,12 @@
         "SafeERC20"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IDistributor.sol": {
-      "lastModificationDate": 1684289371413,
-      "contentHash": "cc1d8ae4038439f87df47da9cef2eb6e",
-      "sourceName": "contracts/interfaces/IDistributor.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [
-        "./IRegistryProvider.sol",
-        "@openzeppelin/contracts/utils/introspection/IERC165.sol"
-      ],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IDistributor"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IRewardsHandler.sol": {
-      "lastModificationDate": 1684289371706,
-      "contentHash": "feea9da0edc261a5941c507a5b15ca6a",
-      "sourceName": "contracts/interfaces/IRewardsHandler.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "IRewardsHandler"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IRegistryProvider.sol": {
-      "lastModificationDate": 1684289371676,
-      "contentHash": "6982a1961d2b5d2fa2ac4c5e1a3ce9d0",
-      "sourceName": "contracts/interfaces/IRegistryProvider.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IRegistryProvider"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
-      "lastModificationDate": 1684290252882,
-      "contentHash": "9a04322bb8f6b8f2767d8358d1d2537b",
-      "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC165"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/utils/Address.sol": {
-      "lastModificationDate": 1684290790657,
-      "contentHash": "1ea1589528625ace210951bc8cd186c9",
-      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Address"
-      ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IOutputReceiverV2.sol": {
-      "lastModificationDate": 1684289371633,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IOutputReceiverV2.sol": {
+      "lastModificationDate": 1684258110572,
       "contentHash": "1e33d973dd3fc407bd069b2ab7aaabc7",
       "sourceName": "contracts/interfaces/IOutputReceiverV2.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -1103,12 +928,12 @@
         "IOutputReceiverV2"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IOutputReceiver.sol": {
-      "lastModificationDate": 1684289371625,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IOutputReceiver.sol": {
+      "lastModificationDate": 1684258110577,
       "contentHash": "4d300b2e62ea34e72ab6c0aa9f309ae0",
       "sourceName": "contracts/interfaces/IOutputReceiver.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -1148,12 +973,225 @@
         "IOutputReceiver"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/node_modules/@openzeppelin/contracts/utils/Context.sol": {
-      "lastModificationDate": 1684290790727,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "lastModificationDate": 1684329853997,
+      "contentHash": "9a04322bb8f6b8f2767d8358d1d2537b",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC165"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IRegistryProvider.sol": {
+      "lastModificationDate": 1684258110579,
+      "contentHash": "6982a1961d2b5d2fa2ac4c5e1a3ce9d0",
+      "sourceName": "contracts/interfaces/IRegistryProvider.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IRegistryProvider"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IDistributor.sol": {
+      "lastModificationDate": 1684258110580,
+      "contentHash": "cc1d8ae4038439f87df47da9cef2eb6e",
+      "sourceName": "contracts/interfaces/IDistributor.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "./IRegistryProvider.sol",
+        "@openzeppelin/contracts/utils/introspection/IERC165.sol"
+      ],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IDistributor"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IRewardsHandler.sol": {
+      "lastModificationDate": 1684258110569,
+      "contentHash": "feea9da0edc261a5941c507a5b15ca6a",
+      "sourceName": "contracts/interfaces/IRewardsHandler.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "IRewardsHandler"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1684329853914,
+      "contentHash": "1ea1589528625ace210951bc8cd186c9",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1684329853922,
       "contentHash": "07f148e0d44b2ffc23b3ae6dd6e38cfb",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -1190,12 +1228,12 @@
         "Context"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IVotingEscrow.sol": {
-      "lastModificationDate": 1684289371724,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IVotingEscrow.sol": {
+      "lastModificationDate": 1684258110563,
       "contentHash": "7cf48c9cbf22a7b8859cf5067dec9e29",
       "sourceName": "contracts/interfaces/IVotingEscrow.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -1235,12 +1273,12 @@
         "IVotingEscrow"
       ]
     },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/interfaces/IFeeReporter.sol": {
-      "lastModificationDate": 1684289371433,
+    "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/interfaces/IFeeReporter.sol": {
+      "lastModificationDate": 1684258110561,
       "contentHash": "6416f46547fd25e1e593b60562f59800",
       "sourceName": "contracts/interfaces/IFeeReporter.sol",
       "solcConfig": {
-        "version": "0.8.4",
+        "version": "0.8.10",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -1276,44 +1314,6 @@
       "artifacts": [
         "IFeeReporter"
       ]
-    },
-    "/Users/thanhtrinh/Documents/GitHub/FraxStakingDemo/hardhat/contracts/Revest.sol": {
-      "lastModificationDate": 1684304704187,
-      "contentHash": "1b88afc50437a254ecd7651a03f7a5ae",
-      "sourceName": "contracts/Revest.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
     }
   }
 }

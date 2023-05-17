@@ -107,7 +107,7 @@ contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165 {
     function lockTokens(
         uint endTime,
         uint amountToLock
-    ) external payable returns (uint fnftId) {    
+    ) external returns (uint fnftId) {    
 
         /// Mint FNFT
         {
