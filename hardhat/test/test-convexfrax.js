@@ -35,10 +35,8 @@ const WETH ={
     43114:"0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
 };
 
-const VOTING_ESCROW = "0x3Ae658656d1C526144db371FaEf2Fff7170654eE";
-const DISTRIBUTOR = "0x095010A79B28c99B2906A8dc217FC33AEfb7Db93";
 const frxETHCURVE_TOKEN = "0xf43211935C781D5ca1a41d2041F397B8A7366C7A";
-const WFTM_TOKEN = "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83";
+const FXS_TOKEN = "0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0";
 
 const N_COINS = 7;
 
@@ -68,13 +66,10 @@ let chainId;
 let RevestCF;
 let RevestContract;
 let SmartWalletChecker;
-let rvstTokenContract;
-let wftm;
+let lpTokenContract;
+let fxsToken;
 let fnftId;
 let fnftId2;
-let xLQDR;
-let feeDistro;
-let RevestHelperCon;
 const quantity = 1;
 
 
@@ -84,8 +79,6 @@ let ownerSigner;
 let whales = [  
     "0x0dDAFB4C1885Df3088f21403DAdc69E0b6E963d2", // Holds a ton of RVST
     "0x2CA3a2b525E75b2F20f59dEcCaE3ffa4bdf3EAa2", // Holds lots of CURVE.fiETH ...
-    // "0x383ea12347e56932e08638767b8a2b3c18700493", // xLQDR admin
-    // "0xf4c5b06ff9cd8f685ddcc58202597e56f1c0faee", // feeDistributor admin
 ];
 let whaleSigners = [];
 
@@ -142,15 +135,11 @@ describe("Revest", function () {
             
             RevestContract = new ethers.Contract(REVEST, revestABI, owner);
 
-            // The LQDR contract object
-            rvstTokenContract = new ethers.Contract(frxETHCURVE_TOKEN, abi, owner);
+            // The frxETH/ETH LPs contract object
+            lpTokenContract = new ethers.Contract(frxETHCURVE_TOKEN, abi, owner);
 
-            // WFTM contract
-            wftm = new ethers.Contract(WFTM_TOKEN, abi, owner);
-
-            // Load xLQDR and FeeDistributor objects
-            xLQDR = new ethers.Contract(VOTING_ESCROW, VE_ABI, owner);
-            feeDistro = new ethers.Contract(DISTRIBUTOR, DISTRO_ABI, owner);
+            // fxsToken contract
+            fxsToken = new ethers.Contract(FXS_TOKEN, abi, owner);
 
 
             for (const whale of whales) {
@@ -175,10 +164,6 @@ describe("Revest", function () {
             let tx = await RevestContract.connect(ownerSigner).modifyWhitelist(RevestCF.address, true);
             await tx.wait();
 
-            //TODO: what is this ?
-            // await xLQDR.connect(whaleSigners[2]).commit_smart_wallet_checker(SmartWalletChecker.address);
-            // await xLQDR.connect(whaleSigners[2]).apply_smart_wallet_checker();
-
             resolve();
         });
     });
@@ -190,14 +175,12 @@ describe("Revest", function () {
         let time = block.timestamp;
 
         // Outline the parameters that will govern the FNFT
-        let expiration = time + (1 * 365 * 60 * 60 * 24); // One year in future
+        let expiration = time + (0.25 * 365 * 60 * 60 * 24); // Three months in future
         let amount = ethers.utils.parseEther('10'); //frxETHCurve
 
         // Mint the FNFT
-        await rvstTokenContract.connect(whaleSigners[1]).approve(RevestCF.address, ethers.constants.MaxInt256);
-        console.log("\there");
+        await lpTokenContract.connect(whaleSigners[1]).approve(RevestCF.address, ethers.constants.MaxInt256);
         fnftId = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount);
-        console.log("\there");
         let txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount);
         await txn.wait();
 
@@ -213,20 +196,18 @@ describe("Revest", function () {
         await txn.wait();
     });
 
-    /*
+    
     it("Should accumulate fees", async () => {        
         
         // We start by transferring tokens to the Fee Distributor
-        // In this case, WFTM and LQDR
-        let amount = ethers.utils.parseEther('100'); //LQDR
-        await rvstTokenContract.connect(whaleSigners[1]).transfer(DISTRIBUTOR, amount);
-        await wftm.connect(whaleSigners[1]).transfer(DISTRIBUTOR, amount);
-
+        // In this case, fxsToken and frxETH/ETH LPs
         // Fast forward time
         await timeTravel(2 * WEEK);
+        // The frxETH/ETH LPs contract object
+        let crvToken = new ethers.Contract("0xD533a949740bb3306d119CC777fa900bA034cd52", abi, owner);
        
-        let origBalLQDR = await rvstTokenContract.balanceOf(whales[1]);
-        let origBalWFTM = await wftm.balanceOf(whales[1]);
+        let origBalTokens = await crvToken.balanceOf(whales[1]);
+        let origBalWFTM = await fxsToken.balanceOf(whales[1]);
 
         let bytes = ethers.utils.formatBytes32String('0');
 
@@ -245,20 +226,20 @@ describe("Revest", function () {
         state = abiCoder.decode(['address', 'string[]'],currentState);
         console.log(state);
 
-        let newBalLQDR = await rvstTokenContract.balanceOf(whales[1]);
-        let newWFTM = await wftm.balanceOf(whales[1]);
+        let newBalTokens = await crvToken.balanceOf(whales[1]);
+        let newWFTM = await fxsToken.balanceOf(whales[1]);
 
-        console.log("\n\tOriginal LQDR Balance: " + ethers.utils.formatEther(origBalLQDR).toString());
-        console.log("\tNew LQDR Balance: " + ethers.utils.formatEther(newBalLQDR).toString());
+        console.log("\n\tOriginal CRV Balance: " + ethers.utils.formatEther(origBalTokens).toString());
+        console.log("\tNew CRV Balance: " + ethers.utils.formatEther(newBalTokens).toString());
 
         // There are other people in the farm, we can't predict with good precision how much any one user will get
         // Only that they will get more than a non-zero amount
-        assert(newBalLQDR.gt(origBalLQDR));
+        assert(newBalTokens.gt(origBalTokens));
         assert(newWFTM.gt(origBalWFTM));
 
-    });*/
+    });
 
-    it("Should deposit additional LQDR in the FNFT", async () => {
+    it("Should deposit additional frxETH/ETH LPs in the FNFT", async () => {
         
         
 
@@ -272,30 +253,30 @@ describe("Revest", function () {
 
         let newValue = await RevestCF.getValue(fnftId);
 
-        console.log("\n\tOriginal value of xLQDR was: " + ethers.utils.formatEther(curValue).toString());
-        console.log("\tCurrent value of xLQDR is: " + ethers.utils.formatEther(newValue).toString());
+        console.log("\n\tOriginal value of frxETH/ETH Stake was: " + ethers.utils.formatEther(curValue).toString());
+        console.log("\tCurrent value of frxETH/ETH Stake is: " + ethers.utils.formatEther(newValue).toString());
 
         // Allow for integer drift
         assert(newValue.sub(curValue.mul(2)).lt(ethers.utils.parseEther('0.0001')));
 
     });
     
-    it("Should relock the xLQDR for maximum time period", async () => {
+    it("Should relock the frxETH/ETH Stake for maximum time period", async () => {
         
         let curValue = await RevestCF.getValue(fnftId);
-        await timeTravel(0.2 * YEAR);
+        await timeTravel(2 * WEEK);
         // Will deposit as much as we did originally, should double our value
         let recent = await ethers.provider.getBlockNumber();
         let block = await ethers.provider.getBlock(recent);
         let time = block.timestamp;
-        let expiration = time + (1 * 365 * 60 * 60 * 24 - 3600); // One years in future
+        let expiration = time + (0.25 * 365 * 60 * 60 * 24 - 3600); // Three months in future
 
         await RevestContract.connect(whaleSigners[1]).extendFNFTMaturity(fnftId, expiration);
 
         let newValue = await RevestCF.getValue(fnftId);
 
-        console.log("\n\tOriginal value of xLQDR was: " + ethers.utils.formatEther(curValue).toString());
-        console.log("\tCurrent value of xLQDR is: " + ethers.utils.formatEther(newValue).toString());
+        console.log("\n\tOriginal value of frxETH/ETH Stake was: " + ethers.utils.formatEther(curValue).toString());
+        console.log("\tCurrent value of frxETH/ETH Stake is: " + ethers.utils.formatEther(newValue).toString());
 
         // Allow for integer drift
         assert(newValue.sub(curValue.mul(2)).lt(ethers.utils.parseEther('0.1')));
@@ -304,19 +285,19 @@ describe("Revest", function () {
     
     it("Should unlock and withdraw the FNFT", async () => {
 
-        await timeTravel(1*YEAR + DAY);
+        await timeTravel(0.25*YEAR + DAY);
 
-        let curValueLQDR = await rvstTokenContract.balanceOf(whales[1]);
+        let curValueTokens = await lpTokenContract.balanceOf(whales[1]);
 
         await RevestContract.connect(whaleSigners[1]).withdrawFNFT(fnftId, 1);
 
-        let newValue = await rvstTokenContract.balanceOf(whales[1]);
+        let newValue = await lpTokenContract.balanceOf(whales[1]);
 
-        console.log("\n\tOriginal value of LQDR was: " + ethers.utils.formatEther(curValueLQDR).toString());
-        console.log("\tCurrent value of LQDR is: " + ethers.utils.formatEther(newValue).toString());
+        console.log("\n\tOriginal value of frxETH/ETH LPs was: " + ethers.utils.formatEther(curValueTokens).toString());
+        console.log("\tCurrent value of frxETH/ETH LPs is: " + ethers.utils.formatEther(newValue).toString());
 
         // Allow for integer drift
-        assert(newValue.sub(curValueLQDR).eq(ethers.utils.parseEther('20')));
+        assert(newValue.sub(curValueTokens).eq(ethers.utils.parseEther('10.1')));
 
     });
 
@@ -336,7 +317,7 @@ async function timeTravel(time) {
 }
 
 async function approveAll(signer, address) {
-    let approval = await rvstTokenContract.connect(signer).approve(address, ethers.constants.MaxInt256);
+    let approval = await lpTokenContract.connect(signer).approve(address, ethers.constants.MaxInt256);
     let out = await approval.wait();
     
 }
