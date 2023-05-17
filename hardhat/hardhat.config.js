@@ -14,37 +14,43 @@ module.exports = {
                 blockNumber: 30568809,
             },
         },
-        rinkeby: {
-            url: process.env.RINKEBY,
+        goerli: {
+            url: process.env.GOERLI, 
             accounts: [process.env.TESTING_PRIVATE]
-
-        },
-        mainnet: {
-            url: process.env.MAINNET ,
-            accounts: [process.env.PRIVATE_KEY],
-            blockGasLimit: 12487794,
-        },
-        matic: {
-            url: process.env.MATIC,
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 1711e9,
-            chainId: 137,
-            blockGasLimit: 12487794
-        },
-        fantom: {
-            url: process.env.FANTOM,
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 400e9,
-            chainId: 250,
-            blockGasLimit: 12487794
-        },
-        avax: {
-            url: "https://api.avax.network/ext/bc/C/rpc",
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 70e9,
-            chainId: 43114,
-            blockGasLimit: 8000000
         }
+
+        // rinkeby: {
+        //     url: process.env.RINKEBY,
+        //     accounts: [process.env.TESTING_PRIVATE]
+
+        // },
+
+        // mainnet: {
+        //     url: process.env.MAINNET ,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     blockGasLimit: 12487794,
+        // },
+        // matic: {
+        //     url: process.env.MATIC,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 1711e9,
+        //     chainId: 137,
+        //     blockGasLimit: 12487794
+        // },
+        // fantom: {
+        //     url: process.env.FANTOM,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 400e9,
+        //     chainId: 250,
+        //     blockGasLimit: 12487794
+        // },
+        // avax: {
+        //     url: "https://api.avax.network/ext/bc/C/rpc",
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 70e9,
+        //     chainId: 43114,
+        //     blockGasLimit: 8000000
+        // }
 
     },
     solidity: {
