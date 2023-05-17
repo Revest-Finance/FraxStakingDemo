@@ -2,6 +2,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-deploy");
 require("@nomiclabs/hardhat-etherscan");
+require("hardhat-tracer");
 
 require("dotenv").config();
 
@@ -10,45 +11,52 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: "https://rpc.ftm.tools",
-                blockNumber: 30568809,
+                url: "https://eth-mainnet.g.alchemy.com/v2/zOVFUzSEld1v_MuTOqGPYkTYttwBUrmF",
+                blockNumber: 17277518,
+                blockGasLimit: 100100000,
+                gas: 21000000
             },
         },
-        rinkeby: {
-            url: process.env.RINKEBY,
-            accounts: [process.env.TESTING_PRIVATE]
+        // goerli: {
+        //     url: process.env.GOERLI, 
+        //     accounts: [process.env.TESTING_PRIVATE]
+        // }
+        // rinkeby: {
+        //     url: process.env.RINKEBY,
+        //     accounts: [process.env.TESTING_PRIVATE]
 
-        },
-        mainnet: {
-            url: process.env.MAINNET ,
-            accounts: [process.env.PRIVATE_KEY],
-            blockGasLimit: 12487794,
-        },
-        matic: {
-            url: process.env.MATIC,
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 1711e9,
-            chainId: 137,
-            blockGasLimit: 12487794
-        },
-        fantom: {
-            url: process.env.FANTOM,
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 400e9,
-            chainId: 250,
-            blockGasLimit: 12487794
-        },
-        avax: {
-            url: "https://api.avax.network/ext/bc/C/rpc",
-            accounts: [process.env.PRIVATE_KEY],
-            gasPrice: 70e9,
-            chainId: 43114,
-            blockGasLimit: 8000000
-        }
+        // },
+
+        // mainnet: {
+        //     url: process.env.MAINNET ,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     blockGasLimit: 12487794,
+        // },
+        // matic: {
+        //     url: process.env.MATIC,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 1711e9,
+        //     chainId: 137,
+        //     blockGasLimit: 12487794
+        // },
+        // fantom: {
+        //     url: process.env.FANTOM,
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 400e9,
+        //     chainId: 250,
+        //     blockGasLimit: 12487794
+        // },
+        // avax: {
+        //     url: "https://api.avax.network/ext/bc/C/rpc",
+        //     accounts: [process.env.PRIVATE_KEY],
+        //     gasPrice: 70e9,
+        //     chainId: 43114,
+        //     blockGasLimit: 8000000
+        // }
 
     },
     solidity: {
-        version: "0.8.4",
+        version: "0.8.10",
         settings: {
             optimizer: {
                 enabled: true,
