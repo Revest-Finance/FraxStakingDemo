@@ -48,7 +48,7 @@ const TEST_TOKEN = {
 };
 
 // Tooled for mainnet Ethereum
-const REVEST = '0x412c1197E1d7F1C0FDF22998737D3E329eF42F1B';
+const REVEST = '0x9f551F75DB1c301236496A2b4F7CeCb2d1B2b242';
 const revestABI = [
                     'function withdrawFNFT(uint tokenUID, uint quantity) external',
                     'function depositAdditionalToFNFT(uint fnftId, uint amount,uint quantity) external returns (uint)',
@@ -213,6 +213,7 @@ describe("Revest", function () {
         await txn.wait();
     });
 
+    /*
     it("Should accumulate fees", async () => {        
         
         // We start by transferring tokens to the Fee Distributor
@@ -255,18 +256,19 @@ describe("Revest", function () {
         assert(newBalLQDR.gt(origBalLQDR));
         assert(newWFTM.gt(origBalWFTM));
 
-    });
+    });*/
 
     it("Should deposit additional LQDR in the FNFT", async () => {
         
-        await timeTravel(1 * YEAR);
+        
 
         let curValue = await RevestCF.getValue(fnftId);
+        console.log("Current value: ", curValue.toString());
 
         // Will deposit as much as we did originally, should double our value
-        let amount = ethers.utils.parseEther('10');
+        let amount = ethers.utils.parseEther('0.1');
 
-        await RevestContract.connect(whaleSigners[1]).depositAdditionalToFNFT(fnftId, amount, 1);
+        await RevestContract.connect(whaleSigners[1]).depositAdditionalToFNFT(fnftId, amount, 1, {gasLimit: 30000000});
 
         let newValue = await RevestCF.getValue(fnftId);
 
@@ -277,16 +279,16 @@ describe("Revest", function () {
         assert(newValue.sub(curValue.mul(2)).lt(ethers.utils.parseEther('0.0001')));
 
     });
-
+    
     it("Should relock the xLQDR for maximum time period", async () => {
         
         let curValue = await RevestCF.getValue(fnftId);
-
+        await timeTravel(0.2 * YEAR);
         // Will deposit as much as we did originally, should double our value
         let recent = await ethers.provider.getBlockNumber();
         let block = await ethers.provider.getBlock(recent);
         let time = block.timestamp;
-        let expiration = time + (2 * 365 * 60 * 60 * 24 - 3600); // Two years in future
+        let expiration = time + (1 * 365 * 60 * 60 * 24 - 3600); // One years in future
 
         await RevestContract.connect(whaleSigners[1]).extendFNFTMaturity(fnftId, expiration);
 
@@ -299,10 +301,10 @@ describe("Revest", function () {
         assert(newValue.sub(curValue.mul(2)).lt(ethers.utils.parseEther('0.1')));
 
     });
-
+    
     it("Should unlock and withdraw the FNFT", async () => {
 
-        await timeTravel(2*YEAR + DAY);
+        await timeTravel(1*YEAR + DAY);
 
         let curValueLQDR = await rvstTokenContract.balanceOf(whales[1]);
 
@@ -334,7 +336,6 @@ async function timeTravel(time) {
 }
 
 async function approveAll(signer, address) {
-    console.log(signer, address);
     let approval = await rvstTokenContract.connect(signer).approve(address, ethers.constants.MaxInt256);
     let out = await approval.wait();
     

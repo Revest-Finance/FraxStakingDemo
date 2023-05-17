@@ -525,7 +525,7 @@
       ]
     },
     "/Users/rhmontgomery/Documents/Programming/Revest/FraxStaking/hardhat/contracts/VestedEscrowSmartWallet.sol": {
-      "lastModificationDate": 1684300615892,
+      "lastModificationDate": 1684333300067,
       "contentHash": "603d213ecc7eaee1c2b9f89eb5abbfe8",
       "sourceName": "contracts/VestedEscrowSmartWallet.sol",
       "solcConfig": {

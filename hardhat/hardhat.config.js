@@ -11,8 +11,10 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: "https://mainnet.infura.io/v3/08cfb263de5249ba9bb25868d93d0d45",
+                url: "https://eth-mainnet.g.alchemy.com/v2/zOVFUzSEld1v_MuTOqGPYkTYttwBUrmF",
                 blockNumber: 17277518,
+                blockGasLimit: 100100000,
+                gas: 21000000
             },
         },
         // goerli: {
