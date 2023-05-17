@@ -23,6 +23,7 @@ import '@openzeppelin/contracts/utils/introspection/ERC165.sol';
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 // Libraries
 import "./lib/RevestHelper.sol";
@@ -40,7 +41,7 @@ interface IWETH {
  * @author RobAnon
  * @dev 
  */
-contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165 {
+contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165, ReentrancyGuard {
     
     using SafeERC20 for IERC20;
 
@@ -107,7 +108,7 @@ contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165 {
     function lockTokens(
         uint endTime,
         uint amountToLock
-    ) external returns (uint fnftId) {    
+    ) external nonReentrant returns (uint fnftId) {    
 
         /// Mint FNFT
         {
@@ -212,7 +213,7 @@ contract RevestConvexFrax is IOutputReceiverV3, Ownable, ERC165 {
     function triggerOutputReceiverUpdate(
         uint fnftId,
         bytes memory
-    ) external override onlyTokenHolder(fnftId) {
+    ) external override nonReentrant onlyTokenHolder(fnftId) {
         address smartWallAdd = Clones.cloneDeterministic(TEMPLATE, keccak256(abi.encode(TOKEN, fnftId)));
         VestedEscrowSmartWallet wallet = VestedEscrowSmartWallet(smartWallAdd);
         wallet.claimRewards(msg.sender);
