@@ -37,7 +37,7 @@ const WETH ={
 
 const VOTING_ESCROW = "0x3Ae658656d1C526144db371FaEf2Fff7170654eE";
 const DISTRIBUTOR = "0x095010A79B28c99B2906A8dc217FC33AEfb7Db93";
-const LQDR_TOKEN = "0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9";
+const frxETHCURVE_TOKEN = "0x10b620b2dbAC4Faa7D7FFD71Da486f5D44cd86f9";
 const WFTM_TOKEN = "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83";
 
 const N_COINS = 7;
@@ -48,7 +48,7 @@ const TEST_TOKEN = {
 };
 
 // Tooled for mainnet Ethereum
-const REVEST = '0x0e29561C367e961A020A6d91486db28B5a48319f';
+const REVEST = '0x412c1197E1d7F1C0FDF22998737D3E329eF42F1B';
 const revestABI = [
                     'function withdrawFNFT(uint tokenUID, uint quantity) external',
                     'function depositAdditionalToFNFT(uint fnftId, uint amount,uint quantity) external returns (uint)',
@@ -65,7 +65,7 @@ const YEAR = DAY * 365;
 
 let owner;
 let chainId;
-let RevestLD;
+let RevestCF;
 let RevestContract;
 let SmartWalletChecker;
 let rvstTokenContract;
@@ -77,11 +77,15 @@ let feeDistro;
 let RevestHelperCon;
 const quantity = 1;
 
+
+const revestOwner = "0x801e08919a483ceA4C345b5f8789E506e2624ccf"
+let ownerSigner;
+
 let whales = [  
-    "0x9EB52C04e420E40846f73D09bD47Ab5e25821445", // Holds a ton of RVST
-    "0x0055d4369a59bc819f58a76ecc3709407204dbab", // Holds lots of LQDR
-    "0x383ea12347e56932e08638767b8a2b3c18700493", // xLQDR admin
-    "0xf4c5b06ff9cd8f685ddcc58202597e56f1c0faee", // feeDistributor admin
+    "0x0dDAFB4C1885Df3088f21403DAdc69E0b6E963d2", // Holds a ton of RVST
+    "0x2CA3a2b525E75b2F20f59dEcCaE3ffa4bdf3EAa2", // Holds lots of CURVE.fiETH ...
+    // "0x383ea12347e56932e08638767b8a2b3c18700493", // xLQDR admin
+    // "0xf4c5b06ff9cd8f685ddcc58202597e56f1c0faee", // feeDistributor admin
 ];
 let whaleSigners = [];
 
@@ -119,24 +123,26 @@ describe("Revest", function () {
             let PROVIDER_ADDRESS = PROVIDERS[chainId];
 
             console.log(separator);
-            console.log("\tDeploying LD Test System");
-            const RevestLiquidDriverFactory = await ethers.getContractFactory("RevestLiquidDriver");
-            RevestLD = await RevestLiquidDriverFactory.deploy(PROVIDER_ADDRESS, VOTING_ESCROW, DISTRIBUTOR, N_COINS);
-            await RevestLD.deployed();
+            console.log("\tDeploying Convex Frax Test System");
+            
+            const RevestConvexFraxFactory = await ethers.getContractFactory("RevestConvexFrax");
 
-            console.log("\tDeployed LD Test System!");
+            RevestCF = await RevestConvexFraxFactory.deploy(PROVIDER_ADDRESS);
+            await RevestCF.deployed();
 
-            const SmartWalletCheckerFactory = await ethers.getContractFactory("SmartWalletWhitelistV2");
-            SmartWalletChecker = await SmartWalletCheckerFactory.deploy(owner.address);
+            console.log("\tDeployed Convex Frax Test System!");
+
+            const SmartWalletCheckerFactory = await ethers.getContractFactory("VestedEscrowSmartWallet");
+            SmartWalletChecker = await SmartWalletCheckerFactory.deploy();
             await SmartWalletChecker.deployed();
 
-            await SmartWalletChecker.changeAdmin(RevestLD.address, true);
+            //TODO: check if we need to add changeAdmin to vestedEsc
+            //await SmartWalletChecker.changeAdmin(RevestCF.address, true);
 
             RevestContract = new ethers.Contract(REVEST, revestABI, whaleSigners[1]);
 
-
             // The LQDR contract object
-            rvstTokenContract = new ethers.Contract(LQDR_TOKEN, abi, owner);
+            rvstTokenContract = new ethers.Contract(frxETHCURVE_TOKEN, abi, owner);
 
             // WFTM contract
             wftm = new ethers.Contract(WFTM_TOKEN, abi, owner);
@@ -145,19 +151,27 @@ describe("Revest", function () {
             xLQDR = new ethers.Contract(VOTING_ESCROW, VE_ABI, owner);
             feeDistro = new ethers.Contract(DISTRIBUTOR, DISTRO_ABI, owner);
 
+
             for (const whale of whales) {
                 let signer = await ethers.provider.getSigner(whale);
                 whaleSigners.push(signer);
                 setupImpersonator(whale);
                 await approveAll(signer, xLQDR.address);
-                await approveAll(signer, feeDistro.address);
+                await approveAll(signer, feeDistro. address);
             }
-            await approveAll(owner, RevestLD.address);
-            let tx = await RevestContract.connect(whaleSigners[0]).modifyWhitelist(RevestLD.address, true);
+
+            await approveAll(owner, RevestCF.address);
+
+
+
+            ownerSigner = await ethers.provider.getSigner(revestOwner)
+            setupImpersonator(revestOwner);
+            let tx = await RevestContract.connect(ownerSigner).modifyWhitelist(RevestCF.address, true);
             await tx.wait();
 
-            await xLQDR.connect(whaleSigners[2]).commit_smart_wallet_checker(SmartWalletChecker.address);
-            await xLQDR.connect(whaleSigners[2]).apply_smart_wallet_checker();
+            //TODO: what is this ?
+            // await xLQDR.connect(whaleSigners[2]).commit_smart_wallet_checker(SmartWalletChecker.address);
+            // await xLQDR.connect(whaleSigners[2]).apply_smart_wallet_checker();
 
             resolve();
         });
@@ -172,23 +186,25 @@ describe("Revest", function () {
         // Outline the parameters that will govern the FNFT
         let expiration = time + (2 * 365 * 60 * 60 * 24); // Two years in future
         let fee = ethers.utils.parseEther('3');//FTM fee
-        let amount = ethers.utils.parseEther('10'); //LQDR
+        let amount = ethers.utils.parseEther('10'); //frxETHCurve
 
         // Mint the FNFT
-        await rvstTokenContract.connect(whaleSigners[1]).approve(RevestLD.address, ethers.constants.MaxInt256);
-        fnftId = await RevestLD.connect(whaleSigners[1]).callStatic.lockLiquidDriverTokens(expiration, amount, {value:fee});
-        let txn = await RevestLD.connect(whaleSigners[1]).lockLiquidDriverTokens(expiration, amount, {value:fee});
+        await rvstTokenContract.connect(whaleSigners[1]).approve(RevestCF.address, ethers.constants.MaxInt256);
+        console.log("\there");
+        fnftId = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount, {value:fee});
+        console.log("\there");
+        let txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount, {value:fee});
         await txn.wait();
 
-        let expectedValue = await RevestLD.getValue(fnftId);
+        let expectedValue = await RevestCF.getValue(fnftId);
         console.log("\tValue should be slightly less than 10 eth: " + ethers.utils.formatEther(expectedValue).toString());
 
-        let smartWalletAddress = await RevestLD.getAddressForFNFT(fnftId);
+        let smartWalletAddress = await RevestCF.getAddressForFNFT(fnftId);
         console.log("\tSmart wallet address at: " + smartWalletAddress);
 
         // Mint a second FNFT to split the fees 50/50
-        fnftId2 = await RevestLD.connect(whaleSigners[1]).callStatic.lockLiquidDriverTokens(expiration, amount, {value:fee});
-        txn = await RevestLD.connect(whaleSigners[1]).lockLiquidDriverTokens(expiration, amount, {value:fee});
+        fnftId2 = await RevestCF.connect(whaleSigners[1]).callStatic.lockTokens(expiration, amount, {value:fee});
+        txn = await RevestCF.connect(whaleSigners[1]).lockTokens(expiration, amount, {value:fee});
         await txn.wait();
     });
 
@@ -208,17 +224,17 @@ describe("Revest", function () {
 
         let bytes = ethers.utils.formatBytes32String('0');
 
-        await RevestLD.connect(whaleSigners[1]).triggerOutputReceiverUpdate(fnftId2, bytes);
+        await RevestCF.connect(whaleSigners[1]).triggerOutputReceiverUpdate(fnftId2, bytes);
 
-        let currentState = await RevestLD.getOutputDisplayValues(fnftId);
+        let currentState = await RevestCF.getOutputDisplayValues(fnftId);
         let abiCoder = ethers.utils.defaultAbiCoder;
         let state = abiCoder.decode(['address', 'string[]'],currentState);
         console.log(state);
 
 
-        await RevestLD.connect(whaleSigners[1]).triggerOutputReceiverUpdate(fnftId, bytes);
+        await RevestCF.connect(whaleSigners[1]).triggerOutputReceiverUpdate(fnftId, bytes);
 
-        currentState = await RevestLD.getOutputDisplayValues(fnftId);
+        currentState = await RevestCF.getOutputDisplayValues(fnftId);
         abiCoder = ethers.utils.defaultAbiCoder;
         state = abiCoder.decode(['address', 'string[]'],currentState);
         console.log(state);
@@ -240,14 +256,14 @@ describe("Revest", function () {
         
         await timeTravel(1 * YEAR);
 
-        let curValue = await RevestLD.getValue(fnftId);
+        let curValue = await RevestCF.getValue(fnftId);
 
         // Will deposit as much as we did originally, should double our value
         let amount = ethers.utils.parseEther('10');
 
         await RevestContract.connect(whaleSigners[1]).depositAdditionalToFNFT(fnftId, amount, 1);
 
-        let newValue = await RevestLD.getValue(fnftId);
+        let newValue = await RevestCF.getValue(fnftId);
 
         console.log("\n\tOriginal value of xLQDR was: " + ethers.utils.formatEther(curValue).toString());
         console.log("\tCurrent value of xLQDR is: " + ethers.utils.formatEther(newValue).toString());
@@ -259,7 +275,7 @@ describe("Revest", function () {
 
     it("Should relock the xLQDR for maximum time period", async () => {
         
-        let curValue = await RevestLD.getValue(fnftId);
+        let curValue = await RevestCF.getValue(fnftId);
 
         // Will deposit as much as we did originally, should double our value
         let recent = await ethers.provider.getBlockNumber();
@@ -269,7 +285,7 @@ describe("Revest", function () {
 
         await RevestContract.connect(whaleSigners[1]).extendFNFTMaturity(fnftId, expiration);
 
-        let newValue = await RevestLD.getValue(fnftId);
+        let newValue = await RevestCF.getValue(fnftId);
 
         console.log("\n\tOriginal value of xLQDR was: " + ethers.utils.formatEther(curValue).toString());
         console.log("\tCurrent value of xLQDR is: " + ethers.utils.formatEther(newValue).toString());

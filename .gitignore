@@ -2,3 +2,4 @@ node_modules/
 node_modules
 
 hardhat/.env
+hardhat/artifacts/contracts/RevestConvexFrax.sol/ITokenVaultTracker.dbg.json

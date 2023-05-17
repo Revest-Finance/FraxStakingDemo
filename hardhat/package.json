@@ -112,6 +112,7 @@
     "glob-parent": "^5.1.2",
     "graceful-fs": "^4.2.8",
     "growl": "^1.10.5",
+    "hardhat-tracer": "^2.3.0",
     "has": "^1.0.3",
     "has-bigints": "^1.0.1",
     "has-flag": "^3.0.0",

@@ -2,6 +2,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-deploy");
 require("@nomiclabs/hardhat-etherscan");
+require("hardhat-tracer");
 
 require("dotenv").config();
 
@@ -10,15 +11,14 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: "https://rpc.ftm.tools",
-                blockNumber: 30568809,
+                url: "https://mainnet.infura.io/v3/08cfb263de5249ba9bb25868d93d0d45",
+                blockNumber: 17277518,
             },
         },
-        goerli: {
-            url: process.env.GOERLI, 
-            accounts: [process.env.TESTING_PRIVATE]
-        }
-
+        // goerli: {
+        //     url: process.env.GOERLI, 
+        //     accounts: [process.env.TESTING_PRIVATE]
+        // }
         // rinkeby: {
         //     url: process.env.RINKEBY,
         //     accounts: [process.env.TESTING_PRIVATE]
