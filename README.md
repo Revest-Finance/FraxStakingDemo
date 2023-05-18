@@ -12,3 +12,5 @@ Live Deployment may be found at [0x13d64373950ea010055a98f174cf9660b966cb92](htt
 
 # Web App
 [Web App demo is live on Vercel](https://resonate-app-git-feature-frxeth-demo-revest.vercel.app/frxeth)
+
+Positions are viewable [here](https://app.revest.finance/) and the ability to view them in the demo will be added soon.
