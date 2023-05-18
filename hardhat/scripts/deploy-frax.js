@@ -27,16 +27,16 @@ async function main() {
     
     console.log(seperator);
     console.log("\tDeploying FraxETH/ETH Frax Farming <> Revest Integration");
-
+    
     console.log(seperator);
     console.log("\tDeploying RevestConvexFrax");
-    const RevestLiquidDriverFactory = await ethers.getContractFactory("RevestConvexFrax");
-    RevestFraxETH = await RevestLiquidDriverFactory.deploy(PROVIDER_ADDRESS);
+    const RevestFraxETHFactory = await ethers.getContractFactory("RevestConvexFrax");
+    RevestFraxETH = await RevestFraxETHFactory.deploy(PROVIDER_ADDRESS);
     await RevestFraxETH.deployed();
 
     console.log(seperator);
     console.log("\tVerifying contract with Etherscan");
-
+    
     await run("verify:verify", {
         address: RevestFraxETH.address,
         constructorArguments: [

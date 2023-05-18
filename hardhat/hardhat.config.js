@@ -11,11 +11,17 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: "https://eth-mainnet.g.alchemy.com/v2/zOVFUzSEld1v_MuTOqGPYkTYttwBUrmF",
+                url: process.env.MAINNET,
                 blockNumber: 17277518,
                 blockGasLimit: 100100000,
                 gas: 21000000
             },
+        },
+        mainnet: {
+            url: process.env.MAINNET,
+            accounts: [process.env.PRIVATE_KEY],
+            gasPrice: 62e9,
+            blockGasLimit: 12487794,
         },
         // goerli: {
         //     url: process.env.GOERLI, 
